@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASCII 3D Renderer - Real-time Text Sculpture</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>ASCII 3D Engine</h1>
+            <p class="subtitle">Move your cursor to rotate the 3D model</p>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="model-select">Model:</label>
+                <select id="model-select">
+                    <option value="torus">Torus Knot</option>
+                    <option value="sphere">Sphere</option>
+                    <option value="cube">Cube</option>
+                    <option value="custom">Custom (Upload OBJ)</option>
+                </select>
+            </div>
+            <div class="control-group" id="file-upload-group" style="display: none;">
+                <label for="obj-file">Upload OBJ:</label>
+                <input type="file" id="obj-file" accept=".obj" />
+            </div>
+        </div>
+
+        <div id="ascii-viewport">
+            <table id="ascii-canvas" cellspacing="0" cellpadding="0"></table>
+        </div>
+
+        <footer>
+            <div class="stats">
+                <span id="fps">FPS: 0</span>
+                <span id="rotation">Rotation: 0°, 0°</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="engine.js"></script>
+</body>
+
+</html>
