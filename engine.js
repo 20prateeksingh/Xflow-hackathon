@@ -9,8 +9,24 @@ class ASCII3DEngine {
         this.width = 146;  // Characters wide
         this.height = 80;  // Characters tall
 
+        // Math constants for performance
+        this.PI = Math.PI;
+        this.PI2 = Math.PI * 2;
+        this.PI_HALF = Math.PI / 2;
+        this.RAD_TO_DEG = 180 / Math.PI;
+
+        // Viewport offsets
+        this.halfWidth = this.width / 2;
+        this.halfHeight = this.height / 2;
+
         // ASCII character ramp (light to dark) - dot reserved for background only
-        this.chars = ':-+*=%@#&';
+        // this.chars = '&#@%=*+-:';
+        // this.chars = '-=+*#%@';
+        this.chars = '₹¥£€$=*+-';
+
+
+
+
 
         // Rendering buffers
         this.buffer = [];
@@ -58,9 +74,11 @@ class ASCII3DEngine {
             this.mouseX = (e.clientX / rect.width) * 2 - 1;  // -1 to 1
             this.mouseY = (e.clientY / rect.height) * 2 - 1; // -1 to 1
 
-            // Map to rotation angles (using cached π)
-            this.targetRotationY = this.mouseX * this.PI;
-            this.targetRotationX = this.mouseY * this.PI_HALF;
+            // Subtle tilt effect - object follows cursor but with limited rotation
+            // Limit rotation to ±20 degrees (about 0.35 radians) for subtle effect
+            const maxTilt = 0.85;
+            this.targetRotationY = -this.mouseX * maxTilt;       // Left-right tilt (reversed)
+            this.targetRotationX = -this.mouseY * maxTilt * 0.5; // Up-down tilt (flipped to match Y-axis)
         });
 
         // Model selection dropdown
@@ -290,7 +308,7 @@ class ASCII3DEngine {
         const sizeZ = maxZ - minZ;
         const maxSize = Math.max(sizeX, sizeY, sizeZ);
 
-        const targetSize = 5; // Target size for display
+        const targetSize = 10; // Target size for display
         const scale = targetSize / maxSize;
 
         // Center and scale all vertices
@@ -339,16 +357,21 @@ class ASCII3DEngine {
 
     project(point) {
         // Perspective projection
-        const fov = 5;
+        const fov = 7;
         const distance = 10;
         const z = point.z + distance;
 
         if (z <= 0) return null; // Behind camera
 
         const scale = fov / z;
+
+        // Aspect ratio correction: ASCII chars are ~1.6x taller than wide
+        // Scale X more to compensate (makes models appear with correct proportions)
+        const aspectRatio = 1.6; // Typical monospace character height/width ratio
+
         return {
-            x: ~~(point.x * scale * 8 + this.halfWidth),  // Bitwise NOT for Math.floor
-            y: ~~(point.y * scale * 8 + this.halfHeight),
+            x: ~~(point.x * scale * 8 * aspectRatio + this.halfWidth),   // Wider scaling
+            y: ~~(-point.y * scale * 8 + this.halfHeight),                // Negated Y (screen Y goes down, 3D Y goes up)
             z: z
         };
     }
@@ -425,24 +448,38 @@ class ASCII3DEngine {
         this.rotationX += (this.targetRotationX - this.rotationX) * 0.1;
         this.rotationY += (this.targetRotationY - this.rotationY) * 0.1;
 
-        // Add slow auto-rotation
-        const time = performance.now() * 0.0003;
-        const autoRotY = time;
-        const autoRotX = Math.sin(time * 0.5) * 0.2;
+        // Auto-rotation disabled - models only rotate with mouse movement
+        // const time = performance.now() * 0.0003;
+        // const autoRotY = time;
+        // const autoRotX = Math.sin(time * 0.5) * 0.2;
 
         // Transform and project vertices
         const transformedVertices = this.vertices.map(v => {
             let p = { ...v };
-            p = this.rotateY(p, this.rotationY + autoRotY);
-            p = this.rotateX(p, this.rotationX + autoRotX);
-            p = this.rotateZ(p, time * 0.3);
+            p = this.rotateY(p, this.rotationY);
+            p = this.rotateX(p, this.rotationX);
+            // Removed auto Z-rotation
             return p;
         });
 
         const projectedVertices = transformedVertices.map(v => this.project(v));
 
-        // Light direction - from upper right front for better shading
-        const light = this.normalize({ x: 0.3, y: -0.6, z: -0.8 });
+        // Light direction options - uncomment one to try different lighting:
+
+        // Option 1: Upper right front (current) - balanced, shows form well
+        // const light = this.normalize({ x: 0.3, y: -0.6, z: -0.8 });
+
+        // Option 2: Direct front top - dramatic top lighting, strong highlights
+        // const light = this.normalize({ x: 0, y: -1, z: -0.5 });
+
+        // Option 3: Side lighting (right) - emphasizes edges and contours
+        // const light = this.normalize({ x: 1, y: -0.3, z: -0.5 });
+
+        // Option 4: Soft upper left - gentle, diffused look
+        // const light = this.normalize({ x: -0.4, y: -0.7, z: -0.6 });
+
+        // Option 5: Dramatic low angle - rim lighting effect
+        const light = this.normalize({ x: 0.2, y: 0.8, z: -0.5 });
 
         // View direction (camera looking down -Z axis)
         const viewDir = this.normalize({ x: 0, y: 0, z: -1 });
