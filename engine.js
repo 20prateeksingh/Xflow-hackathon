@@ -6,8 +6,7 @@
 class ASCII3DEngine {
     constructor() {
         // Canvas configuration
-        this.width = 146;  // Characters wide
-        this.height = 80;  // Characters tall
+        this.canvas = document.getElementById('ascii-canvas');
 
         // Math constants for performance
         this.PI = Math.PI;
@@ -15,9 +14,6 @@ class ASCII3DEngine {
         this.PI_HALF = Math.PI / 2;
         this.RAD_TO_DEG = 180 / Math.PI;
 
-        // Viewport offsets
-        this.halfWidth = this.width / 2;
-        this.halfHeight = this.height / 2;
 
         // ASCII character ramp (light to dark) - dot reserved for background only
         // this.chars = '&#@%=*+-:';
@@ -47,16 +43,43 @@ class ASCII3DEngine {
         this.frameCount = 0;
         this.lastTime = performance.now();
 
-        // DOM elements
-        this.canvas = document.getElementById('ascii-canvas');
-        this.fpsDisplay = document.getElementById('fps');
-        this.rotationDisplay = document.getElementById('rotation');
-
         // Initialize
-        this.initBuffers();
+        this.updateDimensions();
         this.initEventListeners();
-        this.createModel();
-        this.render();
+
+        // Auto-load Xflow logo
+        this.loadXflowLogo();
+    }
+
+    async loadXflowLogo() {
+        try {
+            // URL encode the path to handle the space in 'obj files'
+            const response = await fetch('obj%20files/Xflow.obj');
+            const objText = await response.text();
+            this.parseOBJ(objText);
+            this.render();
+        } catch (error) {
+            console.error('Failed to load Xflow logo:', error);
+            // Fallback to torus knot if loading fails
+            this.createTorusKnot();
+            this.render();
+        }
+    }
+
+    updateDimensions() {
+        // Calculate grid size based on window size and approx font size (6px width, 10px height)
+        const charWidth = 6;
+        const charHeight = 10;
+
+        this.width = Math.floor(window.innerWidth / charWidth);
+        this.height = Math.floor(window.innerHeight / charHeight);
+
+        // Update viewport offsets
+        this.halfWidth = this.width / 2;
+        this.halfHeight = this.height / 2;
+
+        // Re-initialize buffers with new size
+        this.initBuffers();
     }
 
     initBuffers() {
@@ -68,6 +91,11 @@ class ASCII3DEngine {
     }
 
     initEventListeners() {
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            this.updateDimensions();
+        });
+
         // Track mouse movement for camera rotation
         document.addEventListener('mousemove', (e) => {
             const rect = document.body.getBoundingClientRect();
@@ -76,49 +104,12 @@ class ASCII3DEngine {
 
             // Subtle tilt effect - object follows cursor but with limited rotation
             // Limit rotation to ±20 degrees (about 0.35 radians) for subtle effect
-            const maxTilt = 0.85;
+            const maxTilt = 0.3;
             this.targetRotationY = -this.mouseX * maxTilt;       // Left-right tilt (reversed)
             this.targetRotationX = -this.mouseY * maxTilt * 0.5; // Up-down tilt (flipped to match Y-axis)
         });
-
-        // Model selection dropdown
-        const modelSelect = document.getElementById('model-select');
-        const fileUploadGroup = document.getElementById('file-upload-group');
-
-        modelSelect.addEventListener('change', (e) => {
-            const modelType = e.target.value;
-
-            if (modelType === 'custom') {
-                fileUploadGroup.style.display = 'flex';
-            } else {
-                fileUploadGroup.style.display = 'none';
-                this.loadBuiltInModel(modelType);
-            }
-        });
-
-        // File upload handler
-        const objFileInput = document.getElementById('obj-file');
-        objFileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                this.loadOBJFile(file);
-            }
-        });
     }
 
-    loadBuiltInModel(type) {
-        switch (type) {
-            case 'torus':
-                this.createTorusKnot();
-                break;
-            case 'sphere':
-                this.createSphere();
-                break;
-            case 'cube':
-                this.createCube();
-                break;
-        }
-    }
 
     createTorusKnot() {
         this.vertices = [];
@@ -154,91 +145,6 @@ class ASCII3DEngine {
             }
         }
     }
-
-    createSphere() {
-        this.vertices = [];
-        this.faces = [];
-
-        const radius = 2.5;
-        const segments = 32;
-        const rings = 24;
-
-        for (let ring = 0; ring <= rings; ring++) {
-            const theta = (ring / rings) * Math.PI;
-            const sinTheta = Math.sin(theta);
-            const cosTheta = Math.cos(theta);
-
-            for (let seg = 0; seg <= segments; seg++) {
-                const phi = (seg / segments) * Math.PI * 2;
-                const sinPhi = Math.sin(phi);
-                const cosPhi = Math.cos(phi);
-
-                const x = radius * cosPhi * sinTheta;
-                const y = radius * cosTheta;
-                const z = radius * sinPhi * sinTheta;
-
-                this.vertices.push({ x, y, z });
-            }
-        }
-
-        // Create faces
-        for (let ring = 0; ring < rings; ring++) {
-            for (let seg = 0; seg < segments; seg++) {
-                const first = ring * (segments + 1) + seg;
-                const second = first + segments + 1;
-
-                this.faces.push([first, second, first + 1]);
-                this.faces.push([second, second + 1, first + 1]);
-            }
-        }
-    }
-
-    createCube() {
-        this.vertices = [];
-        this.faces = [];
-
-        const size = 2.5;
-
-        // 8 vertices of a cube
-        this.vertices = [
-            { x: -size, y: -size, z: -size },
-            { x: size, y: -size, z: -size },
-            { x: size, y: size, z: -size },
-            { x: -size, y: size, z: -size },
-            { x: -size, y: -size, z: size },
-            { x: size, y: -size, z: size },
-            { x: size, y: size, z: size },
-            { x: -size, y: size, z: size }
-        ];
-
-        // 12 triangular faces (2 per cube face)
-        this.faces = [
-            // Front
-            [0, 1, 2], [0, 2, 3],
-            // Back
-            [5, 4, 7], [5, 7, 6],
-            // Top
-            [3, 2, 6], [3, 6, 7],
-            // Bottom
-            [4, 5, 1], [4, 1, 0],
-            // Right
-            [1, 5, 6], [1, 6, 2],
-            // Left
-            [4, 0, 3], [4, 3, 7]
-        ];
-    }
-
-    loadOBJFile(file) {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-            const objText = e.target.result;
-            this.parseOBJ(objText);
-        };
-
-        reader.readAsText(file);
-    }
-
     parseOBJ(objText) {
         this.vertices = [];
         this.faces = [];
@@ -317,11 +223,6 @@ class ASCII3DEngine {
             v.y = (v.y - centerY) * scale;
             v.z = (v.z - centerZ) * scale;
         }
-    }
-
-    createModel() {
-        // Default to torus knot
-        this.createTorusKnot();
     }
 
     // 3D Math Functions
@@ -476,10 +377,10 @@ class ASCII3DEngine {
         // const light = this.normalize({ x: 1, y: -0.3, z: -0.5 });
 
         // Option 4: Soft upper left - gentle, diffused look
-        // const light = this.normalize({ x: -0.4, y: -0.7, z: -0.6 });
+        const light = this.normalize({ x: -0.4, y: -0.7, z: -0.6 });
 
         // Option 5: Dramatic low angle - rim lighting effect
-        const light = this.normalize({ x: 0.2, y: 0.8, z: -0.5 });
+        // const light = this.normalize({ x: 0.2, y: 0.8, z: -0.5 });
 
         // View direction (camera looking down -Z axis)
         const viewDir = this.normalize({ x: 0, y: 0, z: -1 });
@@ -501,6 +402,8 @@ class ASCII3DEngine {
 
             // Calculate normal and lighting
             const normal = this.normalize(this.calculateNormal(v0, v1, v2));
+
+
 
             // Diffuse lighting (Lambertian)
             const diffuse = Math.max(0, -(normal.x * light.x + normal.y * light.y + normal.z * light.z));
@@ -533,7 +436,8 @@ class ASCII3DEngine {
         });
 
         // Sort faces by depth (painter's algorithm)
-        facesWithDepth.sort((a, b) => b.avgZ - a.avgZ);
+        // Draw from farthest (smallest Z) to closest (largest Z)
+        facesWithDepth.sort((a, b) => a.avgZ - b.avgZ);
 
         // Draw faces
         facesWithDepth.forEach(({ face, brightness }) => {
@@ -583,7 +487,6 @@ class ASCII3DEngine {
     render() {
         this.renderFrame();
         this.displayBuffer();
-        this.updateStats();
 
         requestAnimationFrame(() => this.render());
     }
