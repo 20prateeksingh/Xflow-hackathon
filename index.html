@@ -9,10 +9,20 @@
 </head>
 
 <body>
-    <!-- ASCII 3D Animation Canvas -->
-    <div id="ascii-canvas"></div>
+    <!-- Container for both layers -->
+    <div id="canvas-container">
+        <!-- Pixel 3D Canvas (revealed on hover) -->
+        <canvas id="pixel-canvas"></canvas>
 
-    <script src="engine.js"></script>
+        <!-- ASCII 3D Animation (base layer) -->
+        <div id="ascii-canvas"></div>
+    </div>
+
+    <!-- Three.js Library (r140 for working OBJLoader) -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/examples/js/loaders/OBJLoader.js"></script>
+
+    <script src="engine.js?v=15"></script>
 </body>
 
 </html>
