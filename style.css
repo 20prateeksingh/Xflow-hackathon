@@ -1,289 +1,333 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap');
+/* Xflow AI Hackathon 2026 - Design System */
 
-:root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f5f5f5;
-    --text-primary: #000000;
-    --text-secondary: #333333;
-    --accent: #666666;
-    --border: #cccccc;
-}
+/* ===== FONTS ===== */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&display=swap');
 
+/* ===== CSS RESET ===== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Source Code Pro', 'Courier New', monospace;
-    background: #ffffff;
-    color: #000000;
-    overflow: hidden;
-    width: 100vw;
-    height: 100vh;
+/* ===== ROOT VARIABLES (from Figma) ===== */
+:root {
+    /* Colors */
+    --grey-700: #1F2741;
+    --grey-500: #818BAF;
+    --grey-300: #CCD2E9;
+    --grey-000: #FEFEFE;
+
+    /* Typography */
+    --font-primary: 'IBM Plex Mono', monospace;
+
+    /* Spacing */
+    --container-width: 1200px;
+    --section-gap: 122px;
 }
 
-.container {
+/* ===== BASE STYLES ===== */
+html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    /* Enable vertical mandatory snapping */
+}
+
+body {
+    font-family: var(--font-primary);
+    background: var(--grey-700);
+    color: var(--grey-000);
+    overflow-x: hidden;
+}
+
+/* ===== NAVBAR (Fixed/Sticky) ===== */
+#navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 1400px;
-    padding: 2rem;
+    z-index: 1000;
+    background: var(--grey-700);
+    display: flex;
+    justify-content: center;
+    /* Centers .nav-wrapper */
+    border-bottom: 1px solid rgba(204, 210, 233, 0.1);
+    /* Optional: separator */
+}
+
+/* Wrapper to match content width */
+.nav-wrapper {
+    width: 100%;
+    max-width: 1840px;
+    /* Match hero max-width */
+    padding: 20px 40px;
+    /* Vertical padding + side matching hero */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.nav-link {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 3.04px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--grey-300);
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: var(--grey-000);
+}
+
+.nav-link.active {
+    text-decoration: underline;
+}
+
+.apply-btn {
+    background: var(--grey-300);
+    color: var(--grey-700);
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.apply-btn:hover {
+    opacity: 0.9;
+}
+
+/* ===== HERO SECTION (Cover Page - Responsive Layout) ===== */
+.hero-section {
+    height: 100vh;
+    background: var(--grey-700);
+    /* Add padding-top to account for fixed navbar */
+    padding-top: 100px;
+    /* Approx nav height + spacing */
+    box-sizing: border-box;
+    scroll-snap-align: start;
+    /* Snap to top */
+}
+
+.hero-container {
+    padding: 0 40px 40px 40px;
+    /* Remove top padding as section has it */
+    /* Max width 1840px (1920 - 2*40px margins), then center with extra padding */
+    max-width: 1840px;
+    margin: 0 auto;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 2rem;
+    /* gap: 36px; - Removed gap as navbar is out */
+    box-sizing: border-box;
 }
 
-header {
-    text-align: center;
-    animation: fadeInDown 0.8s ease-out;
-}
-
-.controls {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    animation: fadeIn 0.8s ease-out;
-}
-
-.control-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.control-group label {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    font-weight: 500;
-}
-
-.control-group select,
-.control-group input[type="file"] {
-    font-family: 'Source Code Pro', monospace;
-    font-size: 0.9rem;
-    padding: 0.4rem 0.8rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.control-group select:hover,
-.control-group select:focus {
-    border-color: var(--text-secondary);
-    outline: none;
-}
-
-.control-group input[type="file"]::file-selector-button {
-    font-family: 'Source Code Pro', monospace;
-    padding: 0.3rem 0.6rem;
-    background: var(--text-primary);
-    color: var(--bg-primary);
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-right: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.control-group input[type="file"]::file-selector-button:hover {
-    opacity: 0.8;
-}
-
-h1 {
-    font-size: 3rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-}
-
-.subtitle {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
-    opacity: 0.8;
-}
-
-#ascii-viewport {
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2rem;
-    overflow: auto;
-    max-width: 100%;
-    max-height: 75vh;
-    animation: fadeIn 1s ease-out;
+/* ASCII Frame - fills remaining height after navbar and gaps */
+/* Height = 100vh - 40px (top padding) - navbar (~21px) - 36px (gap) - 40px (bottom padding) */
+.hero-frame {
     position: relative;
-}
-
-
-
-/* Container for both rendering layers */
-#canvas-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    /* Use flex-grow to fill remaining space */
+    flex: 1;
+    min-height: 0;
+    /* Allow shrinking if needed */
+    border-radius: 40px;
     overflow: hidden;
-    --mask-x: 50%;
-    --mask-y: 50%;
-    --mask-size: 450px;
+    background: var(--grey-700);
 }
 
-/* ASCII Layer - Base (always visible) */
-#ascii-canvas {
+#hero-ascii-canvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    font-family: var(--font-primary);
+    font-size: 9px;
+    line-height: 9px;
+    color: var(--grey-000);
     white-space: pre;
-    margin: 0;
-    padding: 0;
-    letter-spacing: normal;
-    font-family: 'Source Code Pro', monospace;
-    font-size: 10px;
-    line-height: 10px;
-    text-align: left;
-    color: var(--text-primary);
     user-select: none;
-    z-index: 2;
-
-    /* CSS Mask for reveal effect - TIGHT FADE */
-    -webkit-mask-image: radial-gradient(circle var(--mask-size) at var(--mask-x) var(--mask-y),
-            black 0%,
-            black 90%,
-            transparent 100%);
-    mask-image: radial-gradient(circle var(--mask-size) at var(--mask-x) var(--mask-y),
-            black 0%,
-            black 90%,
-            transparent 100%);
-
-    /* Smooth transitions for mask movement */
-    transition:
-        -webkit-mask-position 0.15s ease-out,
-        mask-position 0.15s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-#ascii-canvas td {
-    display: block;
+/* Badge at bottom of frame (Figma: bottom ~40px from frame bottom) */
+.hero-badge {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--grey-700);
+    color: var(--grey-000);
+    font-size: 40px;
+    font-weight: 700;
+    padding: 5px 24px;
+    z-index: 10;
+}
+
+/* ===== CONTENT SECTIONS (Figma Redesign) ===== */
+/* ===== CONTENT SECTIONS (Figma Redesign) ===== */
+.content-section {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 140px 40px 40px 40px;
+    /* 100px nav offset + 40px visual padding */
+    box-sizing: border-box;
+    scroll-snap-align: start;
+    /* Snap to top */
+}
+
+.section-container {
+    width: 100%;
+    max-width: 1840px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 40px;
+    align-items: stretch;
+    /* Stretch text and 3D cols */
+    padding: 0 40px;
+    /* Match Navbar & Hero internal padding */
+}
+
+.section-text {
+    grid-column: span 5;
+    /* 5 cols text + 1 col gap + 6 cols 3D = 12 */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    /* Top aligned (default) */
+}
+
+/* Typography (Figma Specs) */
+.section-heading {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.section-heading h1 {
+    font-size: 32px;
+    font-weight: 600;
+    /* SemiBold */
+    color: #CCD2E9;
+    /* Grey 300 */
+    line-height: normal;
+    margin: 0;
+}
+
+.section-heading h2 {
+    font-size: 20px;
+    font-weight: 600;
+    /* SemiBold */
+    color: #A9B1D0;
+    /* Grey 400 */
+    line-height: normal;
+    margin: 0;
+}
+
+.section-body {
+    font-size: 16px;
+    font-weight: 400;
+    /* Regular */
+    color: #A9B1D0;
+    /* Grey 400 */
+    line-height: normal;
+    margin-top: 0;
+}
+
+/* 3D Container (Right Column) */
+.section-3d {
+    grid-column: 7 / span 6;
+    /* Start col 7, span 6 (Gap at col 6) */
+    width: 100%;
+    height: 100%;
+    /* Fill stretched height */
+    position: relative;
+}
+
+.canvas-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: rgba(18, 20, 29, 0.7);
+    /* #12141D @ 70% */
+    border-radius: 12px;
     overflow: hidden;
-    white-space: pre;
 }
 
-/* Pixel Canvas Layer - Base (always visible) */
-#pixel-canvas {
+/* Canvas Styles */
+.pixel-canvas {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    image-rendering: pixelated;
+    /* Crisp edges */
+    opacity: 1;
+    /* Always visible (masked) */
     z-index: 1;
 
-    /* Smooth jagged edges with subtle blur */
-    filter: blur(0.5px);
-
-    /* Inverted Mask: Hide model inside the circle, show outside - TIGHT FADE */
-    -webkit-mask-image: radial-gradient(circle var(--mask-size) at var(--mask-x) var(--mask-y),
-            transparent 0%,
-            transparent 90%,
+    /* Inverse Mask: Hide inside circle (show ASCII), Show outside (show model) */
+    -webkit-mask-image: radial-gradient(circle 200px at var(--mask-x) var(--mask-y),
+            transparent 50%,
             black 100%);
-    mask-image: radial-gradient(circle var(--mask-size) at var(--mask-x) var(--mask-y),
-            transparent 0%,
-            transparent 90%,
+    mask-image: radial-gradient(circle 200px at var(--mask-x) var(--mask-y),
+            transparent 50%,
             black 100%);
-
-    /* Smooth transitions matching ascii layer */
-    transition:
-        -webkit-mask-position 0.15s ease-out,
-        mask-position 0.15s ease-out;
 }
 
-footer {
+/* ... ascii-canvas ... */
+
+/* Hover Effects - Opacity handled by masks now */
+
+.ascii-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    animation: fadeInUp 0.8s ease-out;
-}
-
-.stats {
+    height: 100%;
+    color: var(--grey-000);
+    white-space: pre;
+    font-family: var(--font-primary);
+    font-size: 10px;
+    /* Scaling fix */
+    line-height: 10px;
+    user-select: none;
     display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 3rem;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    letter-spacing: 0.05em;
+    z-index: 2;
+    /* On top */
+    opacity: 1;
+
+    /* Mask: Show ASCII only inside the "flashlight" circle */
+    -webkit-mask-image: radial-gradient(circle 250px at var(--mask-x) var(--mask-y),
+            black 50%,
+            /* Sharper center */
+            transparent 100%);
+    mask-image: radial-gradient(circle 250px at var(--mask-x) var(--mask-y),
+            black 50%,
+            /* Sharper center */
+            transparent 100%);
 }
 
-.stats span {
-    padding: 0.5rem 1rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.stats span:hover {
-    background: var(--border);
-    transform: translateY(-2px);
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    h1 {
-        font-size: 2rem;
-    }
-
-    .subtitle {
-        font-size: 0.9rem;
-    }
-
-    #ascii-canvas {
-        font-size: 8px;
-        line-height: 8px;
-    }
-
-    .stats {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-}
+/* Hover Effects moved to earlier block */

@@ -17,11 +17,11 @@ class ASCIIOnlyEngine {
         this.targetRotationX = 0;
         this.targetRotationY = 0;
 
-        // ASCII Settings (High Resolution 9px)
-        this.charWidth = 5.4;
-        this.charHeight = 9;
-        this.asciiChars = ".:*₹€£$";
-        // this.asciiChars = "£€$₹..";
+        // ASCII Settings (High Resolution)
+        this.charWidth = 3.6;
+        this.charHeight = 6;
+        // this.asciiChars = ".₹$€£";
+        this.asciiChars = "£€$₹..";
 
 
         // Performance
@@ -39,46 +39,29 @@ class ASCIIOnlyEngine {
     initASCIIHelpers() {
         this.smallCanvas = document.createElement('canvas');
         this.smallCtx = this.smallCanvas.getContext('2d', { willReadFrequently: true });
-        this.smallCtx.imageSmoothingEnabled = false;
         this.updateASCIIDimensions();
     }
 
     updateASCIIDimensions() {
-        // Use container dimensions (hero-frame) instead of viewport
-        const container = this.canvas.parentElement;
-        const width = container ? container.clientWidth : 1200;
-        const height = container ? container.clientHeight : 642;
-
-        const cols = Math.floor(width / this.charWidth);
-        const rows = Math.floor(height / this.charHeight);
+        const cols = Math.floor(window.innerWidth / this.charWidth);
+        const rows = Math.floor(window.innerHeight / this.charHeight);
 
         this.smallCanvas.width = cols;
         this.smallCanvas.height = rows;
         this.cols = cols;
         this.rows = rows;
-
-        this.containerWidth = width;
-        this.containerHeight = height;
     }
 
     initThreeJS() {
-        // Get container dimensions
-        const container = this.canvas.parentElement;
-        const width = container ? container.clientWidth : 1200;
-        const height = container ? container.clientHeight : 642;
-
-        this.containerWidth = width;
-        this.containerHeight = height;
-
-        // Offscreen renderer (sized to container, not viewport)
+        // Offscreen renderer (not visible)
         this.offscreenCanvas = document.createElement('canvas');
-        this.offscreenCanvas.width = width;
-        this.offscreenCanvas.height = height;
+        this.offscreenCanvas.width = window.innerWidth;
+        this.offscreenCanvas.height = window.innerHeight;
 
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(0x1F2741);
 
-        const aspect = width / height;
+        const aspect = window.innerWidth / window.innerHeight;
         this.camera = new THREE.PerspectiveCamera(35, aspect, 0.1, 1000);
         this.camera.position.z = 15;
 
@@ -87,7 +70,7 @@ class ASCIIOnlyEngine {
             antialias: true,
             preserveDrawingBuffer: true
         });
-        this.renderer.setSize(width, height);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(window.devicePixelRatio);
 
         // Lights
@@ -118,8 +101,8 @@ class ASCIIOnlyEngine {
             this.modelPath,
             (object) => {
                 const material = new THREE.MeshPhongMaterial({
-                    color: 0x2E5CB8,
-                    shininess: 0,
+                    color: 0xffffff,
+                    shininess: 60,
                     flatShading: false,
                     side: THREE.DoubleSide
                 });
@@ -134,13 +117,14 @@ class ASCIIOnlyEngine {
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
 
-                this.modelSize = size;
-                this.modelCenter = center;
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 4 / maxDim;
+
+                object.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+                object.scale.setScalar(scale);
 
                 this.modelGroup.add(object);
                 this.model = object;
-
-                this.fitModel();
             },
             (xhr) => { },
             (error) => {
@@ -149,39 +133,14 @@ class ASCIIOnlyEngine {
         );
     }
 
-    fitModel() {
-        if (!this.model || !this.modelSize || !this.modelCenter) return;
-
-        const dist = this.camera.position.z;
-        const vFOV = (this.camera.fov * Math.PI) / 180;
-        const visibleHeight = 2 * Math.tan(vFOV / 2) * dist;
-        const visibleWidth = visibleHeight * this.camera.aspect;
-
-        const targetWidth = visibleWidth * 0.60;
-        const scale = targetWidth / this.modelSize.x;
-
-        this.model.scale.setScalar(scale);
-        this.model.position.set(
-            -this.modelCenter.x * scale,
-            -this.modelCenter.y * scale,
-            -this.modelCenter.z * scale
-        );
-    }
-
     initEventListeners() {
         window.addEventListener('resize', () => {
-            // Use container dimensions for resize
-            const container = this.canvas.parentElement;
-            const width = container ? container.clientWidth : 1200;
-            const height = container ? container.clientHeight : 642;
-
-            this.camera.aspect = width / height;
+            this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();
-            this.renderer.setSize(width, height);
-            this.offscreenCanvas.width = width;
-            this.offscreenCanvas.height = height;
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.offscreenCanvas.width = window.innerWidth;
+            this.offscreenCanvas.height = window.innerHeight;
             this.updateASCIIDimensions();
-            this.fitModel(); // Update model scale
         });
 
 
@@ -224,13 +183,8 @@ class ASCIIOnlyEngine {
             const g = data[i * 4 + 1];
             const b = data[i * 4 + 2];
 
-            let brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-            // Contrast stretching: Map 0.15-0.55 to 0.0-1.0 to use full ramp
-            brightness = (brightness - 0.15) * 3.0;
-            brightness = Math.max(0, Math.min(1, brightness));
-
-            const charIndex = Math.floor(brightness * (this.asciiChars.length - 1));
+            const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            const charIndex = Math.floor((1.0 - brightness) * (this.asciiChars.length - 1));
             const char = this.asciiChars[charIndex];
 
             asciiStr += char;
@@ -278,8 +232,8 @@ class ThreeJSEngine {
         this.targetMaskY = -1;
 
         // ASCII Settings (Optimized)
-        this.charWidth = 6;  // Match 10px font width
-        this.charHeight = 10; // Match 10px font height
+        this.charWidth = 8;  // Increased for performance
+        this.charHeight = 12;
         this.asciiChars = ".₹$€£";
 
         // Performance
@@ -299,54 +253,31 @@ class ThreeJSEngine {
     initASCIIHelpers() {
         this.smallCanvas = document.createElement('canvas');
         this.smallCtx = this.smallCanvas.getContext('2d', { willReadFrequently: true });
-        this.smallCtx.imageSmoothingEnabled = false;
 
-        this.updateDimensions();
-    }
+        const cols = Math.floor(590 / this.charWidth);
+        const rows = Math.floor(642 / this.charHeight);
 
-    updateDimensions() {
-        if (!this.container) return;
-
-        const width = this.container.clientWidth || 590;
-        const height = this.container.clientHeight || 642;
-
-        // Update ASCII Helpers
-        if (this.smallCanvas) {
-            const cols = Math.floor(width / this.charWidth);
-            const rows = Math.floor(height / this.charHeight);
-
-            this.smallCanvas.width = cols;
-            this.smallCanvas.height = rows;
-            this.cols = cols;
-            this.rows = rows;
-        }
-
-        // Update ThreeJS
-        if (this.camera && this.renderer) {
-            this.camera.aspect = width / height;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(width, height);
-        }
+        this.smallCanvas.width = cols;
+        this.smallCanvas.height = rows;
+        this.cols = cols;
+        this.rows = rows;
     }
 
     initThreeJS() {
         this.scene = new THREE.Scene();
-        this.scene.background = null; // Transparent background
+        this.scene.background = new THREE.Color(0x818BAF);
 
-        const width = this.container ? (this.container.clientWidth || 590) : 590;
-        const height = this.container ? (this.container.clientHeight || 642) : 642;
-
-        const aspect = width / height;
+        const aspect = 590 / 642;
         this.camera = new THREE.PerspectiveCamera(35, aspect, 0.1, 1000);
         this.camera.position.z = 15;
 
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.pixelCanvas,
             antialias: true,
-            alpha: true, // Enable transparency
+            alpha: false,
             preserveDrawingBuffer: true
         });
-        this.renderer.setSize(width, height);
+        this.renderer.setSize(590, 642);
         this.renderer.setPixelRatio(window.devicePixelRatio);
 
         // Lights
@@ -410,10 +341,6 @@ class ThreeJSEngine {
     }
 
     initEventListeners() {
-        window.addEventListener('resize', () => {
-            this.updateDimensions();
-        });
-
         this.container.addEventListener('mousemove', (e) => {
             const rect = this.container.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -422,17 +349,12 @@ class ThreeJSEngine {
             this.mouseX = (x / rect.width) * 2 - 1;
             this.mouseY = (y / rect.height) * 2 - 1;
 
-            // Mouse tilt removed per user request (Cover only)
-            // this.targetRotationY = this.mouseX * maxTilt;
-            // this.targetRotationX = this.mouseY * maxTilt * 0.5;
+            const maxTilt = 0.5;
+            this.targetRotationY = this.mouseX * maxTilt;
+            this.targetRotationX = this.mouseY * maxTilt * 0.5;
 
             this.targetMaskX = x / rect.width;
             this.targetMaskY = y / rect.height;
-        });
-
-        this.container.addEventListener('mouseleave', () => {
-            this.targetMaskX = -1;
-            this.targetMaskY = -1;
         });
     }
 
@@ -454,7 +376,6 @@ class ThreeJSEngine {
             return;
         }
 
-        this.smallCtx.clearRect(0, 0, this.cols, this.rows);
         this.smallCtx.drawImage(this.pixelCanvas, 0, 0, this.cols, this.rows);
         const imageData = this.smallCtx.getImageData(0, 0, this.cols, this.rows);
         const data = imageData.data;
@@ -465,22 +386,12 @@ class ThreeJSEngine {
             const r = data[i * 4];
             const g = data[i * 4 + 1];
             const b = data[i * 4 + 2];
-            const a = data[i * 4 + 3];
 
-            if (a < 50) {
-                // Background (transparent) -> Use '.'
-                asciiStr += ".";
-            } else {
-                let brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            const brightness = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            const charIndex = Math.floor((1.0 - brightness) * (this.asciiChars.length - 1));
+            const char = this.asciiChars[charIndex];
 
-                // Contrast stretching: Map 0.15-0.55 to 0.0-1.0 to use full ramp
-                brightness = (brightness - 0.15) * 3.0;
-                brightness = Math.max(0, Math.min(1, brightness));
-
-                const charIndex = Math.floor(brightness * (this.asciiChars.length - 1));
-                const char = this.asciiChars[charIndex];
-                asciiStr += char;
-            }
+            asciiStr += char;
 
             if ((i + 1) % this.cols === 0) {
                 asciiStr += "\n";
@@ -497,13 +408,8 @@ class ThreeJSEngine {
         if (!this.isVisible) return;
 
         if (this.modelGroup) {
-            this.modelGroup.rotation.y += 0.002; // Default slow rotation
-        }
-
-        if (this.model) {
-            // Mouse interaction applies to the inner model
-            this.model.rotation.y += (this.targetRotationY - this.model.rotation.y) * 0.1;
-            this.model.rotation.x += (this.targetRotationX - this.model.rotation.x) * 0.1;
+            this.modelGroup.rotation.y += (this.targetRotationY - this.modelGroup.rotation.y) * 0.1;
+            this.modelGroup.rotation.x += (this.targetRotationX - this.modelGroup.rotation.x) * 0.1;
         }
 
         const maskEasing = 0.2;
