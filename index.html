@@ -33,7 +33,7 @@
             <!-- ASCII Frame (rounded corners) -->
             <div class="hero-frame">
                 <div id="hero-ascii-canvas"></div>
-                <div class="hero-badge">Xflow AI Day 2026</div>
+                <div class="hero-badge glitch-text">Xflow AI Day 2026</div>
             </div>
         </div>
     </section>
@@ -43,15 +43,28 @@
         <div class="section-container">
             <div class="section-text">
                 <div class="section-heading">
-                    <h1>Build for Xflow</h1>
-                    <h2>Using AI</h2>
+                    <h1>About</h1>
+                    <h2>The very first Xflow AI Hackathon</h2>
                 </div>
-                <p class="section-body">
-                    Lorem ipsum dolor sit amet consectetur. Pellentesque nec turpis donec massa feugiat tincidunt
-                    mattis.
-                    Facilisis porta elementum et ullamcorper. Erat enim purus mauris gravida odio eget.
-                    Bibendum ut consequat varius sem.
-                </p>
+                <div class="section-body-container">
+                    <p class="section-body">
+                        Unlock your potential. Build the future of Xflow. This is your chance to ship AI-driven impact
+                        that matters.
+                        <br><br>
+                        <strong>Theme: “Build for Xflow with AI”</strong>
+                    </p>
+                    <div class="verticals-list">
+                        <div class="vertical-item">
+                            <h3>Delight Our Customers</h3>
+                            <p>Build features that solve real pain points and wow users.Focus on adoption and outcomes.
+                            </p>
+                        </div>
+                        <div class="vertical-item">
+                            <h3>Supercharge Efficiency</h3>
+                            <p>Automate workflows and empower internal teams to do more with less.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="section-3d">
                 <div id="canvas-container-1" class="canvas-container">
@@ -67,15 +80,40 @@
         <div class="section-container">
             <div class="section-text">
                 <div class="section-heading">
-                    <h1>Competition</h1>
-                    <h2>Guidelines</h2>
+                    <h1>How It Works</h1>
+                    <h2>The Blueprint</h2>
                 </div>
-                <p class="section-body">
-                    Lorem ipsum dolor sit amet consectetur. Pellentesque nec turpis donec massa feugiat tincidunt
-                    mattis.
-                    Facilisis porta elementum et ullamcorper. Erat enim purus mauris gravida odio eget.
-                    Bibendum ut consequat varius sem.
-                </p>
+                <div class="section-body-container">
+                    <p class="section-body">
+                        No code? No problem. Innovation is for everyone.
+                    </p>
+                    <div class="rules-grid">
+                        <div class="rule-item">
+                            <h3>Squad Up</h3>
+                            <ul>
+                                <li>4-5 members per team</li>
+                                <li>Min 2 non-tech members</li>
+                                <li>Captains draft talent</li>
+                            </ul>
+                        </div>
+                        <div class="rule-item">
+                            <h3>Build Your Way</h3>
+                            <ul>
+                                <li><strong>Code:</strong> Cursor, v0, Copilot</li>
+                                <li><strong>Low-Code:</strong> Retool, Bubble</li>
+                                <li><strong>No-Code:</strong> Zapier, Notion AI</li>
+                            </ul>
+                        </div>
+                        <div class="rule-item">
+                            <h3>The Arena</h3>
+                            <ul>
+                                <li><strong>Build:</strong> Xflow Office (6-8 hrs)</li>
+                                <li><strong>Pitch:</strong> WeWork Auditorium</li>
+                                <li><strong>Date:</strong> 2nd/3rd Week Feb</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="section-3d">
                 <div id="canvas-container-2" class="canvas-container">
@@ -91,15 +129,30 @@
         <div class="section-container">
             <div class="section-text">
                 <div class="section-heading">
-                    <h1>Win Amazing</h1>
-                    <h2>Rewards</h2>
+                    <h1>The Spoils</h1>
+                    <h2>Evaluation & Rewards</h2>
                 </div>
-                <p class="section-body">
-                    Lorem ipsum dolor sit amet consectetur. Pellentesque nec turpis donec massa feugiat tincidunt
-                    mattis.
-                    Facilisis porta elementum et ullamcorper. Erat enim purus mauris gravida odio eget.
-                    Bibendum ut consequat varius sem.
-                </p>
+                <div class="section-body-container">
+                    <p class="section-body">
+                        Big impact deserves big rewards. Total prize pool: <strong>₹80,000</strong>.
+                    </p>
+                    <div class="prizes-grid">
+                        <div class="prize-card gold">
+                            <h3>User-facing Impact</h3>
+                            <div class="prize-amount">1st: ₹25,000</div>
+                            <div class="prize-amount">2nd: ₹15,000</div>
+                        </div>
+                        <div class="prize-card gold">
+                            <h3>Internal Solution</h3>
+                            <div class="prize-amount">1st: ₹25,000</div>
+                            <div class="prize-amount">2nd: ₹15,000</div>
+                        </div>
+                    </div>
+                    <div class="bonus-prizes">
+                        <p><strong>Additional Honors:</strong> Best Business Impact · Most Innovative Idea.</p>
+                        <p><em>Every participant walks away with Amazon Vouchers + Exclusive Swag.</em></p>
+                    </div>
+                </div>
             </div>
             <div class="section-3d">
                 <div id="canvas-container-3" class="canvas-container">
@@ -142,7 +195,7 @@
             // Section 3D engines
             new ThreeJSEngine(1, 'obj files/Xflow.obj');
             new ThreeJSEngine(2, 'obj files/Xflow.obj');
-            new ThreeJSEngine(3, 'obj files/Xflow.obj');
+            new ThreeJSEngine(3, 'obj files/Trophy.obj');
 
             // Scroll Spy
             const sections = document.querySelectorAll('section');
@@ -171,6 +224,35 @@
             }, observerOptions);
 
             sections.forEach(section => observer.observe(section));
+
+            // Text Scramble Effect (Hero Badge)
+            const badge = document.querySelector('.hero-badge');
+            if (badge) {
+                const finalText = badge.innerText;
+                const chars = '.:-+*=%@#';
+                let iteration = 0;
+
+                const scramble = () => {
+                    badge.innerText = finalText
+                        .split('')
+                        .map((letter, index) => {
+                            if (finalText[index] === ' ') return ' ';
+
+                            if (index < iteration) {
+                                return finalText[index];
+                            }
+                            return chars[Math.floor(Math.random() * chars.length)];
+                        })
+                        .join('');
+
+                    if (iteration < finalText.length) {
+                        iteration += 1 / 6; // Smooth resolve (60fps)
+                        requestAnimationFrame(scramble);
+                    }
+                };
+
+                scramble();
+            }
         });
     </script>
 </body>

@@ -166,9 +166,11 @@ body {
 }
 
 /* Badge at bottom of frame (Figma: bottom ~40px from frame bottom) */
+/* Badge at bottom of frame (Figma: bottom ~40px from frame bottom) */
 .hero-badge {
     position: absolute;
     bottom: 60px;
+    /* Restored original position */
     left: 50%;
     transform: translateX(-50%);
     background: var(--grey-700);
@@ -177,9 +179,9 @@ body {
     font-weight: 700;
     padding: 5px 24px;
     z-index: 10;
+    white-space: nowrap;
 }
 
-/* ===== CONTENT SECTIONS (Figma Redesign) ===== */
 /* ===== CONTENT SECTIONS (Figma Redesign) ===== */
 .content-section {
     height: 100vh;
@@ -245,12 +247,85 @@ body {
 
 .section-body {
     font-size: 16px;
-    font-weight: 400;
-    /* Regular */
+    font-weight: 300;
     color: #A9B1D0;
     /* Grey 400 */
-    line-height: normal;
+    line-height: 1.6;
     margin-top: 0;
+}
+
+/* Prize Grid */
+.prizes-grid {
+    display: flex;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.prize-card {
+    flex: 1;
+    min-width: 250px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(204, 210, 233, 0.05));
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    text-align: center;
+}
+
+.prize-card h3 {
+    color: var(--grey-000);
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.prize-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFD700;
+    /* Gold */
+    margin-bottom: 5px;
+}
+
+.bonus-prizes {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--grey-500);
+    font-size: 14px;
+}
+
+strong {
+    color: var(--grey-000);
+    /* Highlight strong text */
+}
+
+/* Verticals List */
+.verticals-list {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.vertical-item {
+    padding: 20px;
+    background: rgba(204, 210, 233, 0.05);
+    border-left: 2px solid var(--grey-300);
+    border-radius: 0 8px 8px 0;
+}
+
+.vertical-item h3 {
+    font-size: 18px;
+    color: var(--grey-000);
+    /* White */
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.vertical-item p {
+    font-size: 14px;
+    color: var(--grey-500);
+    margin: 0;
+    line-height: 1.5;
 }
 
 /* 3D Container (Right Column) */
@@ -330,4 +405,47 @@ body {
             transparent 100%);
 }
 
-/* Hover Effects moved to earlier block */
+/* Rules Grid */
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.rule-item {
+    padding: 15px;
+    background: rgba(204, 210, 233, 0.05);
+    border-radius: 8px;
+    border-top: 2px solid var(--grey-500);
+}
+
+.rule-item h3 {
+    font-size: 16px;
+    color: var(--grey-000);
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+.rule-item ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.rule-item ul li {
+    font-size: 14px;
+    color: var(--grey-400);
+    margin-bottom: 6px;
+    position: relative;
+    padding-left: 12px;
+}
+
+.rule-item ul li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--grey-500);
+    font-size: 10px;
+    top: 2px;
+}
