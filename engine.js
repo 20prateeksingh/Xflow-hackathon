@@ -19,8 +19,8 @@ class ASCIIOnlyEngine {
 
         // ASCII Settings (Responsive - smaller on mobile)
         const isMobile = window.innerWidth < 768;
-        this.charWidth = isMobile ? 3.6 : 5.4;
-        this.charHeight = isMobile ? 6 : 9;
+        this.charWidth = isMobile ? 2.4 : 5.4;
+        this.charHeight = isMobile ? 4 : 9;
         this.asciiChars = ".:*₹€£$";
         // this.asciiChars = "£€$₹..";
 
@@ -28,6 +28,7 @@ class ASCIIOnlyEngine {
         // Performance
         this.frameCount = 0;
         this.asciiUpdateInterval = 2; // Update ASCII every N frames
+        this.isResizing = false; // Pause rendering during resize
 
         // Initialize
         this.initASCIIHelpers();
@@ -171,18 +172,33 @@ class ASCIIOnlyEngine {
 
     initEventListeners() {
         window.addEventListener('resize', () => {
-            // Use container dimensions for resize
+            // Match ThreeJSEngine's simple approach - DON'T resize offscreenCanvas or call fitModel
             const container = this.canvas.parentElement;
-            const width = container ? container.clientWidth : 1200;
-            const height = container ? container.clientHeight : 642;
+            if (!container) return;
 
-            this.camera.aspect = width / height;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(width, height);
-            this.offscreenCanvas.width = width;
-            this.offscreenCanvas.height = height;
-            this.updateASCIIDimensions();
-            this.fitModel(); // Update model scale
+            const width = container.clientWidth || 1200;
+            const height = container.clientHeight || 642;
+
+            // Update container dimensions
+            this.containerWidth = width;
+            this.containerHeight = height;
+
+            // Update ASCII grid
+            const cols = Math.floor(width / this.charWidth);
+            const rows = Math.floor(height / this.charHeight);
+            this.smallCanvas.width = cols;
+            this.smallCanvas.height = rows;
+            this.cols = cols;
+            this.rows = rows;
+
+            // Update Three.js camera and renderer ONLY (like ThreeJSEngine)
+            if (this.camera && this.renderer) {
+                this.camera.aspect = width / height;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(width, height);
+                // NOTE: NOT updating offscreenCanvas.width/height here
+                // NOTE: NOT calling fitModel() here
+            }
         });
 
 
@@ -207,7 +223,7 @@ class ASCIIOnlyEngine {
     }
 
     renderASCII() {
-        if (!this.model) return;
+        if (!this.model || this.isResizing) return;
 
         // Throttle ASCII generation for performance
         if (this.frameCount % this.asciiUpdateInterval !== 0) {
@@ -278,9 +294,10 @@ class ThreeJSEngine {
         this.targetMaskX = -1;
         this.targetMaskY = -1;
 
-        // ASCII Settings (Optimized)
-        this.charWidth = 6;  // Match 10px font width
-        this.charHeight = 10; // Match 10px font height
+        // ASCII Settings (Responsive - smaller on mobile)
+        const isMobile = window.innerWidth < 768;
+        this.charWidth = isMobile ? 4 : 6;  // Match font width
+        this.charHeight = isMobile ? 6.67 : 10; // Match font height
         this.asciiChars = ".₹$€£";
 
         // Performance
