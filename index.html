@@ -36,6 +36,7 @@
             <div class="hero-frame">
                 <div id="hero-ascii-canvas"></div>
                 <div class="hero-badge glitch-text">Xflow AI Day 2026</div>
+                <div class="hero-date">Live on Feb 11</div>
             </div>
         </div>
     </section>
@@ -351,34 +352,154 @@
 
             sections.forEach(section => observer.observe(section));
 
-            // Text Scramble Effect (Hero Badge)
-            const badge = document.querySelector('.hero-badge');
-            if (badge) {
-                const finalText = badge.innerText;
-                const chars = '.:-+*=%@#';
-                let iteration = 0;
+            // ===== REUSABLE ANIMATION FUNCTIONS =====
 
-                const scramble = () => {
-                    badge.innerText = finalText
-                        .split('')
-                        .map((letter, index) => {
-                            if (finalText[index] === ' ') return ' ';
+            // 1. Scramble (Last 8 characters)
+            const scrambleSuffix = (element, delay = 0) => {
+                if (!element) return;
 
-                            if (index < iteration) {
-                                return finalText[index];
-                            }
-                            return chars[Math.floor(Math.random() * chars.length)];
-                        })
-                        .join('');
+                setTimeout(() => {
+                    const finalText = element.innerText;
 
-                    if (iteration < finalText.length) {
-                        iteration += 1 / 6; // Smooth resolve (60fps)
-                        requestAnimationFrame(scramble);
+                    // Determine cutoff index (Last 8 chars)
+                    let cutoff = Math.max(0, finalText.length - 8);
+
+                    const chars = '.:-+*=%@#';
+                    let iteration = cutoff;
+
+                    const animate = () => {
+                        element.innerText = finalText
+                            .split('')
+                            .map((letter, index) => {
+                                if (finalText[index] === ' ') return ' ';
+                                if (index < cutoff) return finalText[index];
+                                if (index < iteration) return finalText[index];
+                                return chars[Math.floor(Math.random() * chars.length)];
+                            })
+                            .join('');
+
+                        if (iteration < finalText.length) {
+                            iteration += 1 / 30;
+                            requestAnimationFrame(animate);
+                        }
+                    };
+                    animate();
+                }, delay);
+            };
+
+            // 2. Typewriter
+            const typeWriterEffect = (element, text, onComplete) => {
+                element.innerText = "";
+                element.classList.add('cursor-blink');
+
+                let i = 0;
+                const type = () => {
+                    if (i < text.length) {
+                        element.innerText = text.substring(0, i + 1);
+                        i++;
+                        setTimeout(type, 50); // Speed: 50ms per char
+                    } else {
+                        if (onComplete) onComplete();
                     }
                 };
+                type();
+            };
 
-                scramble();
+            // ===== HERO SEQUENCE (Special Case) =====
+            const heroBadge = document.querySelector('.hero-badge');
+            const heroDate = document.querySelector('.hero-date');
+
+            if (heroBadge) {
+                setTimeout(() => {
+                    heroBadge.style.opacity = '1'; // Make visible
+                    typeWriterEffect(heroBadge, "Xflow AI Day 2026", () => {
+                        // Hero Sequence Complete
+                        if (heroDate) {
+                            setTimeout(() => {
+                                heroDate.style.opacity = '1';
+                                scrambleSuffix(heroDate);
+                            }, 500);
+                        }
+                    });
+                }, 500);
             }
+
+            // ===== SECTION ANIMATIONS (On Scroll) =====
+            const contentSections = document.querySelectorAll('.content-section');
+
+            // Prepare Elements (Clear text / Hide content)
+            contentSections.forEach(section => {
+                // H1s
+                const h1 = section.querySelector('h1');
+                if (h1) {
+                    h1.dataset.fullText = h1.innerText;
+                    h1.innerText = "";
+                    h1.classList.add('cursor-blink');
+                }
+
+                // Content Elements (Body text, Lists, Grids)
+                // Select direct children of section-body-container to fade them in as blocks
+                const bodyContainer = section.querySelector('.section-body-container');
+                if (bodyContainer) {
+                    Array.from(bodyContainer.children).forEach(child => {
+                        child.classList.add('fade-element');
+                    });
+                }
+            });
+
+            const animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const section = entry.target;
+
+                        // Prevent re-animating
+                        if (section.dataset.animated) return;
+                        section.dataset.animated = "true";
+
+                        // Sequence: H1 Typewriter -> H3 Scramble -> Content Fade
+                        const h1 = section.querySelector('h1');
+                        const h3s = section.querySelectorAll('h3');
+                        const bodyContainer = section.querySelector('.section-body-container');
+
+                        const triggerContentFade = () => {
+                            if (bodyContainer) {
+                                Array.from(bodyContainer.children).forEach((child, index) => {
+                                    setTimeout(() => {
+                                        child.classList.add('fade-in-active');
+
+                                        // If child contains H3s (like lists/cards), we might have already scrambled them?
+                                        // The scrambleTarget logic was global querySelectorAll('h3').
+                                        // Actually, let's keep H3 scramble independent or part of this?
+                                        // The previous H3 logic targeted ALL h3s in the section.
+                                        // Let's keep H3 scramble separate but timed.
+                                    }, index * 200); // 200ms stagger between content blocks
+                                });
+                            }
+                        };
+
+                        if (h1 && h1.dataset.fullText) {
+                            typeWriterEffect(h1, h1.dataset.fullText, () => {
+                                // After H1 finishes:
+
+                                // 1. Trigger H3 Scramble
+                                h3s.forEach((h3, index) => {
+                                    scrambleSuffix(h3, index * 100);
+                                });
+
+                                // 2. Trigger Content Fade (Concurrent or slightly after)
+                                setTimeout(triggerContentFade, 300);
+                            });
+                        } else {
+                            // Fallback
+                            h3s.forEach((h3, index) => scrambleSuffix(h3, index * 100));
+                            triggerContentFade();
+                        }
+                    }
+                });
+            }, { threshold: 0.2 }); // Trigger slightly earlier (20% visible)
+
+            contentSections.forEach(section => animationObserver.observe(section));
+
         });
     </script>
 </body>

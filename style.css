@@ -1,7 +1,7 @@
 /* Xflow AI Hackathon 2026 - Design System */
 
 /* ===== FONTS ===== */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;700&display=swap');
 
 /* ===== CSS RESET ===== */
 * {
@@ -30,6 +30,7 @@
 html {
     scroll-behavior: smooth;
     scroll-snap-type: y mandatory;
+    overscroll-behavior: none;
     /* Enable vertical mandatory snapping */
 }
 
@@ -171,8 +172,8 @@ body {
 /* Badge at bottom of frame (Figma: bottom ~40px from frame bottom) */
 .hero-badge {
     position: absolute;
-    bottom: 60px;
-    /* Restored original position */
+    bottom: 110px;
+    /* Increased spacing */
     left: 50%;
     transform: translateX(-50%);
     background: var(--grey-700);
@@ -182,6 +183,55 @@ body {
     padding: 5px 24px;
     z-index: 10;
     white-space: nowrap;
+    opacity: 0;
+    /* Hidden initially */
+}
+
+.hero-date {
+    position: absolute;
+    bottom: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--grey-700);
+    /* Match badge background */
+    color: var(--grey-300);
+    font-size: 16px;
+    font-weight: 700;
+    padding: 5px 24px;
+    /* Match badge padding */
+    z-index: 10;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0;
+    /* Hidden initially for animation sequence */
+    transition: opacity 0.5s ease;
+}
+
+/* Typewriter Cursor */
+.cursor-blink::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    /* Thinner than block char */
+    height: 32px;
+    /* Visual height for 40px font */
+    background-color: var(--grey-300);
+    margin-left: 8px;
+    animation: blink 1s step-end infinite;
+    vertical-align: -2px;
+    /* Adjust baseline position */
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 /* ===== CONTENT SECTIONS (Figma Redesign) ===== */
@@ -282,8 +332,8 @@ body {
 .prize-amount {
     font-size: 16px;
     /* Reduced from 24px to fit card style better? Or keep it? Let's make it look like content */
-    font-weight: 400;
-    color: var(--grey-500);
+    font-weight: 300;
+    color: var(--grey-300);
     margin-bottom: 5px;
 }
 
@@ -292,6 +342,7 @@ body {
     padding-top: 20px;
     border-top: 1px solid var(--grey-500);
     font-size: 14px;
+    font-weight: 300;
 }
 
 strong {
@@ -333,8 +384,8 @@ strong {
 .timeline-item::before {
     content: '';
     position: absolute;
-    left: -27px;
-    /* -20px padding - 2px border/2 - 5px radius */
+    left: -28px;
+    /* Adjusted for optical center (-27px was math center) */
     top: 5px;
     width: 12px;
     height: 12px;
@@ -363,8 +414,9 @@ strong {
 
 .timeline-item p {
     font-size: 14px;
-    color: var(--grey-500);
+    color: var(--grey-300);
     line-height: 1.5;
+    font-weight: 300;
 }
 
 .vertical-item {
@@ -384,9 +436,10 @@ strong {
 
 .vertical-item p {
     font-size: 14px;
-    color: var(--grey-500);
+    color: var(--grey-300);
     margin: 0;
     line-height: 1.5;
+    font-weight: 300;
 }
 
 /* 3D Container (Right Column) */
@@ -403,8 +456,8 @@ strong {
     width: 100%;
     height: 100%;
     position: relative;
-    background: rgba(18, 20, 29, 0.7);
-    /* #12141D @ 70% */
+    background: rgba(23, 27, 38, 0.35);
+    /* #171B26 @ 70% */
     border-radius: 12px;
     overflow: hidden;
 }
@@ -497,7 +550,8 @@ strong {
 
 .rule-item ul li {
     font-size: 14px;
-    color: var(--grey-500);
+    font-weight: 300;
+    color: var(--grey-300);
     margin-bottom: 6px;
     position: relative;
     padding-left: 12px;
@@ -508,16 +562,17 @@ strong {
     content: '>';
     position: absolute;
     left: 0;
-    color: var(--grey-500);
+    color: var(--grey-300);
     font-size: 10px;
     top: 5px;
 }
 
 .rule-item p {
     font-size: 14px;
-    color: var(--grey-500);
+    color: var(--grey-300);
     margin: 0;
     line-height: 1.5;
+    font-weight: 300;
 }
 
 /* Tooltip Styles */
@@ -586,7 +641,8 @@ strong {
 
 .demo-time p {
     font-size: 14px;
-    color: var(--grey-500);
+    font-weight: 300;
+    color: var(--grey-300);
     margin-bottom: 20px;
 }
 
@@ -607,13 +663,16 @@ strong {
     padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 30px;
+    gap: 6px 30px;
+    /* Reduced row gap */
 }
 
 .demo-format ul li {
     font-size: 14px;
-    color: var(--grey-500);
-    margin-bottom: 6px;
+    font-weight: 300;
+    color: var(--grey-300);
+    margin-bottom: 0;
+    /* Rely on grid gap */
     padding-left: 12px;
     position: relative;
     line-height: 1.5;
@@ -623,7 +682,7 @@ strong {
     content: '>';
     position: absolute;
     left: 0;
-    color: var(--grey-500);
+    color: var(--grey-300);
     font-size: 10px;
     top: 5px;
 }
@@ -668,7 +727,8 @@ strong {
 
 .judges-panel ul li {
     font-size: 14px;
-    color: var(--grey-500);
+    font-weight: 300;
+    color: var(--grey-300);
     margin-bottom: 6px;
     padding-left: 12px;
     position: relative;
@@ -679,7 +739,19 @@ strong {
     content: '>';
     position: absolute;
     left: 0;
-    color: var(--grey-500);
+    color: var(--grey-300);
     font-size: 10px;
     top: 5px;
+}
+
+/* ===== ANIMATION UTILITIES ===== */
+.fade-element {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in-active {
+    opacity: 1;
+    transform: translateY(0);
 }

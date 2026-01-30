@@ -288,6 +288,8 @@ class ThreeJSEngine {
         this.isVisible = false; // Only render when visible
 
         // Initialize
+        this.hasEntered = false;
+        this.spinSpeed = 0.35; // Start fast (approx 360 deg spin)
         this.initASCIIHelpers();
         this.initThreeJS();
         this.initEventListeners();
@@ -346,22 +348,38 @@ class ThreeJSEngine {
             alpha: true, // Enable transparency
             preserveDrawingBuffer: true
         });
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(window.devicePixelRatio);
 
         // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // Reduced from 0.7 for more contrast
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Increased for better fill
         this.scene.add(ambientLight);
 
         const keyLight = new THREE.DirectionalLight(0xffffff, 1.0); // Slightly increased
-        keyLight.position.set(1, 1, 2).normalize();
+        keyLight.position.set(5, 5, 10); // Moved further out for better shadows
+        keyLight.castShadow = true;
+        keyLight.shadow.mapSize.width = 1024;
+        keyLight.shadow.mapSize.height = 1024;
         this.scene.add(keyLight);
 
         const fillLight = new THREE.DirectionalLight(0xeef4ff, 0.5);
         fillLight.position.set(-1, -1, 1).normalize();
         this.scene.add(fillLight);
 
+        // Rim Light (Back)
+        const rimLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        rimLight.position.set(0, 2, -2).normalize();
+        this.scene.add(rimLight);
+
+        // Extra Fill (Left Side)
+        const sideLight = new THREE.DirectionalLight(0xeef4ff, 0.4);
+        sideLight.position.set(-2, 0, 0).normalize();
+        this.scene.add(sideLight);
+
         this.modelGroup = new THREE.Group();
+        this.modelGroup.position.y = -8; // Start below view
         this.scene.add(this.modelGroup);
     }
 
@@ -377,8 +395,8 @@ class ThreeJSEngine {
             modelPath,
             (object) => {
                 const material = new THREE.MeshStandardMaterial({
-                    color: 0x6EA8FF, // Lighter blue
-                    metalness: 0.7,
+                    color: 0x7991FB, // Lighter blue
+                    metalness: 0.70,
                     roughness: 0.25,
                     flatShading: false,
                     side: THREE.DoubleSide
@@ -387,6 +405,8 @@ class ThreeJSEngine {
                 object.traverse((child) => {
                     if (child instanceof THREE.Mesh) {
                         child.material = material;
+                        child.castShadow = true;
+                        child.receiveShadow = true;
                     }
                 });
 
@@ -498,13 +518,28 @@ class ThreeJSEngine {
         if (!this.isVisible) return;
 
         if (this.modelGroup) {
-            this.modelGroup.rotation.y += 0.002; // Default slow rotation
-        }
+            // Apply current spin speed
+            this.modelGroup.rotation.y += this.spinSpeed;
 
-        if (this.model) {
-            // Mouse interaction applies to the inner model
-            this.model.rotation.y += (this.targetRotationY - this.model.rotation.y) * 0.1;
-            this.model.rotation.x += (this.targetRotationX - this.model.rotation.x) * 0.1;
+            // Decay speed towards idle (0.002)
+            this.spinSpeed += (0.002 - this.spinSpeed) * 0.05;
+
+            if (!this.hasEntered) {
+                // ENTRANCE POSITION (Move up)
+                this.modelGroup.position.y += (0 - this.modelGroup.position.y) * 0.04;
+
+                // Check completion
+                if (this.modelGroup.position.y > -0.1) {
+                    this.hasEntered = true;
+                    this.modelGroup.position.y = 0;
+                }
+            } else {
+                if (this.model) {
+                    // IDLE MOUSE INTERACTION (Only after entrance)
+                    this.model.rotation.y += (this.targetRotationY - this.model.rotation.y) * 0.1;
+                    this.model.rotation.x += (this.targetRotationX - this.model.rotation.x) * 0.1;
+                }
+            }
         }
 
         const maskEasing = 0.2;
