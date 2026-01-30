@@ -221,6 +221,9 @@ class ASCIIOnlyEngine {
                 this.targetRotationY = 0;
                 this.targetRotationX = 0;
             });
+
+            // Mobile gyroscope support
+            this.initGyroscope(heroSection);
         }
     }
 
@@ -260,6 +263,48 @@ class ASCIIOnlyEngine {
         }
 
         this.canvas.innerText = asciiStr;
+    }
+
+    initGyroscope(heroSection) {
+        // Only enable on mobile/touch devices
+        if (!('ontouchstart' in window)) return;
+
+        const handleOrientation = (event) => {
+            // beta: front-back tilt (-180 to 180), gamma: left-right tilt (-90 to 90)
+            let beta = event.beta;   // X-axis rotation
+            let gamma = event.gamma; // Y-axis rotation
+
+            if (beta === null || gamma === null) return;
+
+            // Clamp and normalize values
+            // Assume phone held upright (beta ~90), map ±30 degrees to full tilt
+            const normalizedBeta = Math.max(-30, Math.min(30, beta - 90)) / 30;
+            const normalizedGamma = Math.max(-30, Math.min(30, gamma)) / 30;
+
+            const maxTilt = 0.5;
+            this.targetRotationY = normalizedGamma * maxTilt;
+            this.targetRotationX = normalizedBeta * maxTilt * 0.5;
+        };
+
+        // iOS 13+ requires permission request
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // Add a one-time tap to request permission
+            const requestPermission = () => {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation);
+                        }
+                    })
+                    .catch(console.error);
+                heroSection.removeEventListener('touchstart', requestPermission);
+            };
+            heroSection.addEventListener('touchstart', requestPermission, { once: true });
+        } else if ('DeviceOrientationEvent' in window) {
+            // Android and older iOS
+            window.addEventListener('deviceorientation', handleOrientation);
+        }
     }
 
     animate() {
