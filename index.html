@@ -20,7 +20,12 @@
     <!-- Navbar (Fixed/Sticky) -->
     <nav id="navbar">
         <div class="nav-wrapper">
-            <div class="nav-links">
+            <button class="hamburger" id="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links" id="navLinks">
                 <a href="#home" class="nav-link active">Home</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="#timeline" class="nav-link">Timeline</a>
@@ -332,7 +337,7 @@
 
             // Scroll Spy
             const sections = document.querySelectorAll('section');
-            const navLinks = document.querySelectorAll('.nav-link');
+            const navLinksAll = document.querySelectorAll('.nav-link');
 
             const observerOptions = {
                 root: null,
@@ -346,7 +351,7 @@
                         const id = entry.target.getAttribute('id');
 
                         // Update active state
-                        navLinks.forEach(link => {
+                        navLinksAll.forEach(link => {
                             link.classList.remove('active');
                             if (link.getAttribute('href') === `#${id}`) {
                                 link.classList.add('active');
@@ -505,6 +510,25 @@
             }, { threshold: 0.2 }); // Trigger slightly earlier (20% visible)
 
             contentSections.forEach(section => animationObserver.observe(section));
+
+            // ===== HAMBURGER MENU TOGGLE =====
+            const hamburger = document.getElementById('hamburger');
+            const navLinks = document.getElementById('navLinks');
+
+            if (hamburger && navLinks) {
+                hamburger.addEventListener('click', () => {
+                    hamburger.classList.toggle('active');
+                    navLinks.classList.toggle('active');
+                });
+
+                // Close menu when a link is clicked
+                navLinks.querySelectorAll('.nav-link').forEach(link => {
+                    link.addEventListener('click', () => {
+                        hamburger.classList.remove('active');
+                        navLinks.classList.remove('active');
+                    });
+                });
+            }
 
         });
     </script>

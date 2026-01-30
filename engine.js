@@ -17,9 +17,10 @@ class ASCIIOnlyEngine {
         this.targetRotationX = 0;
         this.targetRotationY = 0;
 
-        // ASCII Settings (High Resolution 9px)
-        this.charWidth = 5.4;
-        this.charHeight = 9;
+        // ASCII Settings (Responsive - smaller on mobile)
+        const isMobile = window.innerWidth < 768;
+        this.charWidth = isMobile ? 3.6 : 5.4;
+        this.charHeight = isMobile ? 6 : 9;
         this.asciiChars = ".:*₹€£$";
         // this.asciiChars = "£€$₹..";
 
