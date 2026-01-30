@@ -873,6 +873,12 @@ strong {
         white-space: nowrap;
     }
 
+    /* Higher resolution ASCII on mobile (smaller chars = more detail) */
+    #hero-ascii-canvas {
+        font-size: 4px;
+        line-height: 4px;
+    }
+
     /* Content Sections - Stack */
     .content-section {
         height: auto;

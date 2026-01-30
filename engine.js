@@ -159,7 +159,9 @@ class ASCIIOnlyEngine {
         const visibleHeight = 2 * Math.tan(vFOV / 2) * dist;
         const visibleWidth = visibleHeight * this.camera.aspect;
 
-        const targetWidth = visibleWidth * 0.60;
+        // Use smaller target width on mobile to prevent zoomed-in appearance
+        const isMobile = window.innerWidth < 768;
+        const targetWidth = visibleWidth * (isMobile ? 0.40 : 0.60);
         const scale = targetWidth / this.modelSize.x;
 
         this.model.scale.setScalar(scale);
