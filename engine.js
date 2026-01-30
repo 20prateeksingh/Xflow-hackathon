@@ -350,10 +350,10 @@ class ThreeJSEngine {
         this.renderer.setPixelRatio(window.devicePixelRatio);
 
         // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // Reduced from 0.7 for more contrast
         this.scene.add(ambientLight);
 
-        const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        const keyLight = new THREE.DirectionalLight(0xffffff, 1.0); // Slightly increased
         keyLight.position.set(1, 1, 2).normalize();
         this.scene.add(keyLight);
 
@@ -376,9 +376,10 @@ class ThreeJSEngine {
         loader.load(
             modelPath,
             (object) => {
-                const material = new THREE.MeshPhongMaterial({
-                    color: 0x2E5CB8,
-                    shininess: 60,
+                const material = new THREE.MeshStandardMaterial({
+                    color: 0x6EA8FF, // Lighter blue
+                    metalness: 0.7,
+                    roughness: 0.25,
                     flatShading: false,
                     side: THREE.DoubleSide
                 });

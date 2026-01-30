@@ -103,6 +103,8 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: opacity 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .apply-btn:hover {
@@ -257,32 +259,31 @@ body {
 /* Prize Grid */
 .prizes-grid {
     display: flex;
+    flex-direction: column;
     gap: 20px;
     margin-top: 30px;
-    flex-wrap: wrap;
 }
 
 .prize-card {
-    flex: 1;
-    min-width: 250px;
     padding: 20px;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(204, 210, 233, 0.05));
-    border: 1px solid rgba(255, 215, 0, 0.3);
-    border-radius: 12px;
-    text-align: center;
+    background: rgba(204, 210, 233, 0.05);
+    border-left: 2px solid var(--grey-300);
+    border-radius: 0 8px 8px 0;
+    text-align: left;
 }
 
 .prize-card h3 {
     color: var(--grey-000);
-    margin-bottom: 15px;
+    margin-bottom: 8px;
     font-size: 18px;
+    font-weight: 700;
 }
 
 .prize-amount {
-    font-size: 24px;
-    font-weight: 700;
-    color: #FFD700;
-    /* Gold */
+    font-size: 16px;
+    /* Reduced from 24px to fit card style better? Or keep it? Let's make it look like content */
+    font-weight: 400;
+    color: var(--grey-500);
     margin-bottom: 5px;
 }
 
@@ -304,6 +305,66 @@ strong {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+/* Timeline List */
+.timeline-list {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    /* Gap handled by padding/margin for continuous line */
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid var(--grey-500);
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 30px;
+    padding-bottom: 40px;
+}
+
+.timeline-item:last-child {
+    padding-bottom: 0;
+}
+
+/* Dot on the line */
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -27px;
+    /* -20px padding - 2px border/2 - 5px radius */
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: var(--grey-700);
+    border: 2px solid var(--grey-300);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.timeline-date {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--grey-300);
+    margin-bottom: 8px;
+    display: inline-block;
+    background: rgba(204, 210, 233, 0.1);
+    padding: 4px 12px;
+    border-radius: 4px;
+}
+
+.timeline-item h3 {
+    font-size: 20px;
+    color: var(--grey-000);
+    margin-bottom: 8px;
+}
+
+.timeline-item p {
+    font-size: 14px;
+    color: var(--grey-500);
+    line-height: 1.5;
 }
 
 .vertical-item {
@@ -405,25 +466,26 @@ strong {
             transparent 100%);
 }
 
-/* Rules Grid */
+/* Rules Grid (Styled like About Section) */
 .rules-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 20px;
     margin-top: 30px;
 }
 
 .rule-item {
-    padding: 15px;
+    padding: 20px;
     background: rgba(204, 210, 233, 0.05);
-    border-radius: 8px;
-    border-top: 2px solid var(--grey-500);
+    border-left: 2px solid var(--grey-300);
+    border-radius: 0 8px 8px 0;
 }
 
+/* Ensure h3 and list styles inside look good */
 .rule-item h3 {
-    font-size: 16px;
+    font-size: 18px;
     color: var(--grey-000);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     font-weight: 700;
 }
 
@@ -435,10 +497,11 @@ strong {
 
 .rule-item ul li {
     font-size: 14px;
-    color: var(--grey-400);
+    color: var(--grey-500);
     margin-bottom: 6px;
     position: relative;
     padding-left: 12px;
+    line-height: 1.5;
 }
 
 .rule-item ul li::before {
@@ -447,5 +510,176 @@ strong {
     left: 0;
     color: var(--grey-500);
     font-size: 10px;
-    top: 2px;
+    top: 5px;
+}
+
+.rule-item p {
+    font-size: 14px;
+    color: var(--grey-500);
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Tooltip Styles */
+.tooltip {
+    position: relative;
+    cursor: help;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 4px;
+    color: var(--grey-300);
+}
+
+.tooltip::before,
+.tooltip::after {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+
+.tooltip::before {
+    content: attr(data-tooltip);
+    bottom: 100%;
+    margin-bottom: 5px;
+    padding: 8px 12px;
+    background: var(--grey-700);
+    color: var(--grey-000);
+    font-size: 12px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    width: max-content;
+    max-width: 200px;
+    text-align: center;
+    border: 1px solid var(--grey-500);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Arrow */
+.tooltip::after {
+    content: '';
+    bottom: 100%;
+    margin-bottom: -5px;
+    border: 5px solid transparent;
+    border-top-color: var(--grey-500);
+}
+
+.tooltip:hover::before,
+.tooltip:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Demo Section */
+.demo-time h3,
+.demo-format h3,
+.demo-table-container h3,
+.judges-panel h3 {
+    font-size: 18px;
+    color: var(--grey-000);
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.demo-time p {
+    font-size: 14px;
+    color: var(--grey-500);
+    margin-bottom: 20px;
+}
+
+.demo-details {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.demo-format {
+    flex: 1;
+    min-width: 200px;
+}
+
+.demo-format ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 30px;
+}
+
+.demo-format ul li {
+    font-size: 14px;
+    color: var(--grey-500);
+    margin-bottom: 6px;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.demo-format ul li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--grey-500);
+    font-size: 10px;
+    top: 5px;
+}
+
+.demo-table-container {
+    flex: 2;
+    min-width: 300px;
+}
+
+.criteria-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.criteria-table th {
+    text-align: left;
+    color: #FFD700;
+    border-bottom: 2px solid var(--grey-500);
+    padding: 8px;
+}
+
+.criteria-table td {
+    border-bottom: 1px solid rgba(129, 139, 175, 0.2);
+    padding: 8px;
+    color: var(--grey-300);
+}
+
+/* Judges Panel */
+.judges-panel {
+    margin-top: 30px;
+    border-top: none;
+    padding-top: 0;
+}
+
+.judges-panel ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.judges-panel ul li {
+    font-size: 14px;
+    color: var(--grey-500);
+    margin-bottom: 6px;
+    padding-left: 12px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.judges-panel ul li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: var(--grey-500);
+    font-size: 10px;
+    top: 5px;
 }

@@ -18,10 +18,12 @@
             <div class="nav-links">
                 <a href="#home" class="nav-link active">Home</a>
                 <a href="#about" class="nav-link">About</a>
+                <a href="#timeline" class="nav-link">Timeline</a>
                 <a href="#rules" class="nav-link">Rules</a>
+                <a href="#demo" class="nav-link">Demo</a>
                 <a href="#prize" class="nav-link">Prize</a>
             </div>
-            <button class="apply-btn">Apply</button>
+            <a href="https://app.youform.com/forms/a7ghn4zm" target="_blank" class="apply-btn">Apply</a>
         </div>
     </nav>
 
@@ -44,24 +46,26 @@
             <div class="section-text">
                 <div class="section-heading">
                     <h1>About</h1>
-                    <h2>The very first Xflow AI Hackathon</h2>
                 </div>
                 <div class="section-body-container">
                     <p class="section-body">
-                        Unlock your potential. Build the future of Xflow. This is your chance to ship AI-driven impact
-                        that matters.
-                        <br><br>
                         <strong>Theme: “Build for Xflow with AI”</strong>
+                        <br><br>
+                        Unlock your potential. Build the future of Xflow. This is your chance to ship AI-driven impact
+                        that matters. AI can be leveraged in either of the following ways:
                     </p>
                     <div class="verticals-list">
                         <div class="vertical-item">
-                            <h3>Delight Our Customers</h3>
-                            <p>Build features that solve real pain points and wow users.Focus on adoption and outcomes.
+                            <h3>AI as a tool</h3>
+                            <p>Use AI to build your solution. eg: a website built entirely using AI (just like this
+                                one!)
                             </p>
                         </div>
                         <div class="vertical-item">
-                            <h3>Supercharge Efficiency</h3>
-                            <p>Automate workflows and empower internal teams to do more with less.</p>
+                            <h3>AI as a feature</h3>
+                            <p>Your solution uses AI to solve a real problem. eg: a chatbot that helps users find
+                                information about Xflow.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -75,13 +79,61 @@
         </div>
     </section>
 
+    <!-- NEW Section: Timeline -->
+    <section id="timeline" class="content-section">
+        <div class="section-container">
+            <div class="section-text">
+                <div class="section-heading">
+                    <h1>The Timeline</h1>
+                </div>
+                <div class="section-body-container">
+                    <div class="timeline-list">
+                        <!-- Item 1: Huddle -->
+                        <div class="timeline-item">
+                            <div class="timeline-date">Feb 2</div>
+                            <h3>Huddle</h3>
+                            <p>Build your team of 4-5 members. Min 2 <span class="tooltip"
+                                    data-tooltip="Sales, Marketing, Partnership, Operations, Risk, Legal and Leadership Team">business
+                                    members</span>.</p>
+                        </div>
+                        <!-- Item 2: Ideate -->
+                        <div class="timeline-item">
+                            <div class="timeline-date">Feb 5</div>
+                            <h3>Ideate</h3>
+                            <p>Finalize your idea to bring to life in the event.</p>
+                        </div>
+                        <!-- Item 3: Execute -->
+                        <div class="timeline-item">
+                            <div class="timeline-date">Feb 11 (10:30am - 5:00pm)</div>
+                            <h3>Execute</h3>
+                            <p>Convert your idea from sketches to a working prototype. AI is your friend!</p>
+                        </div>
+                        <!-- Item 4: Present -->
+                        <div class="timeline-item">
+                            <div class="timeline-date">Feb 11 (5:00pm - 8:00pm)</div>
+                            <h3>Present</h3>
+                            <p>Present to a panel of Judges in the wework Auditorium.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-3d">
+                <div id="canvas-container-timeline" class="canvas-container">
+                    <canvas id="pixel-canvas-timeline" class="pixel-canvas"></canvas>
+                    <div id="ascii-canvas-timeline" class="ascii-canvas"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
     <!-- Section 2: Rules -->
     <section id="rules" class="content-section">
         <div class="section-container">
             <div class="section-text">
                 <div class="section-heading">
-                    <h1>How It Works</h1>
-                    <h2>The Blueprint</h2>
+                    <h1>Rules of the Game</h1>
                 </div>
                 <div class="section-body-container">
                     <p class="section-body">
@@ -89,27 +141,30 @@
                     </p>
                     <div class="rules-grid">
                         <div class="rule-item">
-                            <h3>Squad Up</h3>
+                            <h3>Submission Guidelines</h3>
                             <ul>
-                                <li>4-5 members per team</li>
-                                <li>Min 2 non-tech members</li>
-                                <li>Captains draft talent</li>
+                                <li>Solution must be AI-driven or build using AI tools</li>
+                                <li>Must demonstrate clear relevance to Xflow</li>
+                                <li>A working prototype is mandatory</li>
+                                <li>Code, no-code, or hybrid approaches allowed</li>
+                                <li>All work must be completed during the event</li>
+                                <li>Teams may request access to specific tools or datasets during registration</li>
                             </ul>
                         </div>
                         <div class="rule-item">
-                            <h3>Build Your Way</h3>
+                            <h3>Engineering Support</h3>
                             <ul>
-                                <li><strong>Code:</strong> Cursor, v0, Copilot</li>
-                                <li><strong>Low-Code:</strong> Retool, Bubble</li>
-                                <li><strong>No-Code:</strong> Zapier, Notion AI</li>
+                                <li>Engineering support will be available throughout the event for guidance and
+                                    unblockers.</li>
+                                <li>A Slack channel will be created to post queries to unblock you.</li>
                             </ul>
                         </div>
                         <div class="rule-item">
-                            <h3>The Arena</h3>
+                            <h3>Resources</h3>
                             <ul>
-                                <li><strong>Build:</strong> Xflow Office (6-8 hrs)</li>
-                                <li><strong>Pitch:</strong> WeWork Auditorium</li>
-                                <li><strong>Date:</strong> 2nd/3rd Week Feb</li>
+                                <li>Use synthetic or publicly available datasets</li>
+                                <li>Request internal datasets (subject to approval)</li>
+                                <li>Use any AI framework or platform allowed</li>
                             </ul>
                         </div>
                     </div>
@@ -124,13 +179,82 @@
         </div>
     </section>
 
+    <!-- NEW Section: Demo -->
+    <section id="demo" class="content-section">
+        <div class="section-container">
+            <div class="section-text">
+                <div class="section-heading">
+                    <h1>Presentation & Demo</h1>
+                </div>
+                <div class="section-body-container">
+                    <div class="demo-time">
+                        <h3>Time</h3>
+                        <p>5–10 minutes per team</p>
+                    </div>
+                    <div class="demo-details">
+                        <div class="demo-format">
+                            <h3>Format</h3>
+                            <ul>
+                                <li>Problem statement</li>
+                                <li>Solution & AI approach</li>
+                                <li>Live demo or walkthrough</li>
+                                <li>Business impact & scalability</li>
+                            </ul>
+                        </div>
+                        <div class="demo-table-container">
+                            <h3>Judging Criteria (100 Marks Total)</h3>
+                            <table class="criteria-table">
+                                <tbody>
+                                    <tr>
+                                        <td>Value to Xflow</td>
+                                        <td>30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Innovation & Originality</td>
+                                        <td>20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Technical Complexity</td>
+                                        <td>15</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Working Prototype</td>
+                                        <td>20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ease of Productionisation</td>
+                                        <td>15</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="judges-panel">
+                        <h3>Judging Panel</h3>
+                        <ul>
+                            <li>Vishal</li>
+                            <li>Rahul</li>
+                            <li>Anil</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="section-3d">
+                <div id="canvas-container-demo" class="canvas-container">
+                    <canvas id="pixel-canvas-demo" class="pixel-canvas"></canvas>
+                    <div id="ascii-canvas-demo" class="ascii-canvas"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Section 3: Prize -->
     <section id="prize" class="content-section">
         <div class="section-container">
             <div class="section-text">
                 <div class="section-heading">
                     <h1>The Spoils</h1>
-                    <h2>Evaluation & Rewards</h2>
                 </div>
                 <div class="section-body-container">
                     <p class="section-body">
@@ -194,7 +318,9 @@
 
             // Section 3D engines
             new ThreeJSEngine(1, 'obj files/Xflow.obj');
-            new ThreeJSEngine(2, 'obj files/Xflow.obj');
+            new ThreeJSEngine('timeline', 'obj files/calendar.obj');
+            new ThreeJSEngine(2, 'obj files/whistle.obj');
+            new ThreeJSEngine('demo', 'obj files/Screen.obj');
             new ThreeJSEngine(3, 'obj files/Trophy.obj');
 
             // Scroll Spy
