@@ -91,6 +91,8 @@ body {
 
 .nav-link.active {
     text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 1px;
 }
 
 .apply-btn {
@@ -182,6 +184,13 @@ body {
     white-space: nowrap;
     opacity: 0;
     /* Hidden initially */
+}
+
+/* Fix overlap on mid-sized screens (e.g. 1470x956) */
+@media (max-height: 1000px) and (min-width: 1024px) {
+    .hero-badge {
+        bottom: 70px;
+    }
 }
 
 .hero-date {
@@ -322,8 +331,15 @@ body {
 .prize-card h3 {
     color: var(--grey-000);
     margin-bottom: 8px;
-    font-size: 18px;
     font-weight: 700;
+}
+
+.prize-desc {
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--grey-300);
+    margin-bottom: 12px;
+    line-height: 1.4;
 }
 
 .prize-amount {
